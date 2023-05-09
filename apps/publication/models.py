@@ -1,6 +1,6 @@
 from django.db import models 
 import datetime
-from user.models import *
+from users.models import *
 
 
 class TypePost(BaseModel):
