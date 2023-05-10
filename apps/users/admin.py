@@ -10,5 +10,5 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','user','modified', 'image')
+    list_display = ('id','user','updatedAt', 'image')
 admin.site.register(Profile, ProfileAdmin)

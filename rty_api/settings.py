@@ -91,8 +91,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'rty_db',
-        'USER': 'gabo',
-        'PASSWORD': '',
+        'USER': 'gabito',
+        'PASSWORD': '1357',
         'HOST': 'localhost',
         'PORT': '',
     }

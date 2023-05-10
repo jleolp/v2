@@ -11,8 +11,8 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 
 #########################################
-from serializers import *
-from models import *
+from apps.users.serializers import *
+from apps.users.models import *
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
