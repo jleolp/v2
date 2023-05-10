@@ -31,7 +31,7 @@ PLATFORM = (
 
 class BaseModel(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True, editable=False)
-    updatedAt = models.DateTimeField(auto_now=True)
+    updatedAt = models.DateTimeField(auto_now=True) 
     
 class User(AbstractUser):
     def __str__(self):

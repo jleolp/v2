@@ -22,8 +22,11 @@ class LoginView(APIView):
         password = request.data.get('password', None)
         if email is None or password is None:
             return Response({'message': 'Please provide both username and password'},status=HTTP_400_BAD_REQUEST)
+     
         user1 = User.objects.get(email=email)
+        print(str(user1.username))
         user = authenticate(username=user1.username, password=password)
+        print(str(user))
         if not user:
             return Response({'message': 'Usuario o Contraseña incorrecto !!!! '},status=HTTP_404_NOT_FOUND)
         # Si es correcto añadimos a la request la información de sesión

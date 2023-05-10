@@ -71,4 +71,4 @@ class Publication(BasicModel):
     #moderator = models.ForeignKey('users.User', on_delete=models.PROTECT, verbose_name='Moderador')
     #boat = models.ForeignKey(Boat, on_delete=models.PROTECT, verbose_name='Embarcacion')
     def __str__(self):
-        return f'{self.pk}, {self.owner}, {self.date_posted}'
+        return f'{self.pk}, {self.title}, {self.date_posted}'
