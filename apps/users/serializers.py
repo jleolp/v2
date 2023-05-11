@@ -12,6 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True, 'required': True}
         }
 
+class UserSerializerRegister (serializers.ModelSerializer):
+	 
+	class Meta:
+		model = User
+		fields = '__all__'
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile

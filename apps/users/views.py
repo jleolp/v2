@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout ,authenticate
 from django.contrib.auth.hashers import make_password 
 from rest_framework.authtoken.models import Token
+from django.utils.timezone import now
 import json 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -18,28 +19,23 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         # Recuperamos las credenciales y autenticamos al usuario
-        email= request.data.get('username', None)
-        password = request.data.get('password', None)
-        if email is None or password is None:
-            return Response({'message': 'Please provide both username and password'},status=HTTP_400_BAD_REQUEST)
-     
-        user1 = User.objects.get(email=email)
-        print(str(user1.username))
-        user = authenticate(username=user1.username, password=password)
-        print(str(user))
-        if not user:
-            return Response({'message': 'Usuario o Contraseña incorrecto !!!! '},status=HTTP_404_NOT_FOUND)
-        # Si es correcto añadimos a la request la información de sesión
-        token, _ = Token.objects.get_or_create(user=user)
-        if user: 
-            serializer = UserSerializer(user)
-            # para loguearse una sola vez
-            # login(request, user)
-            return Response({"user":serializer.data,'token': token.key},status=HTTP_200_OK)
-            #return response.Response({'token': token.key}, status=status.HTTP_200_OK)
-
-        # Si no es correcto devolvemos un error en la petición
-        return Response(status=HTTP_404_NOT_FOUND)        
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if username is None or password is None:
+            return Response({'response': 'Please provide both username and password'}, status=HTTP_400_BAD_REQUEST)
+        try:
+            userLog = User.objects.get(Q(username=username) | Q(email=username) )
+            user = authenticate(username=userLog.username, password=password)
+            serializer = UserSerializer(userLog)
+            if not user:
+                return Response({'response': 'Error Authentication '}, status=HTTP_404_NOT_FOUND)
+            token, _ = Token.objects.get_or_create(user=user)
+            userLog.last_login = now()
+            userLog.save()
+            return Response({'token': token.key, 'user': serializer.data},status=HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'response': 'Por favor ingrese Usuario/Email valido'}, status=HTTP_400_BAD_REQUEST)   
+      
 
 class LogoutView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
@@ -64,7 +60,7 @@ class UserRegister(APIView):
                     return Response({"response" : "El correo se encuentra en uso"}, status=HTTP_400_BAD_REQUEST)
                 except ObjectDoesNotExist:
                     data['password'] = make_password(data['password'])
-                    serializer = UserSerializer(data=data, partial=True)		
+                    serializer = UserSerializerRegister(data=data)			
                     if serializer.is_valid():
                         serializer.save()					
                         validatedData = serializer.validated_data
